@@ -1,0 +1,27 @@
+version: "3.0"
+
+services:
+
+    nginx_proxy:
+        # https://github.com/nginx-proxy/nginx-proxy
+        image: jwilder/nginx-proxy
+        ports:
+          - "80:80"
+        volumes:
+          - /var/run/docker.sock:/tmp/docker.sock:ro
+          - ./docker/nginx.tmpl:/app/nginx.tmpl
+        environment:
+          - PROXY_READ_TIMEOUT=5d
+          - CACHE_STATIC_FILES=true
+
+    shiny:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.shiny
+        restart: always
+        volumes:
+          - ./data/plot_cache:/app/data/plot_cache
+        environment:
+          - VIRTUAL_PORT=40000
+          - VIRTUAL_HOST=localhost
+          - NETWORK_ACCESS=internal

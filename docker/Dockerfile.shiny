@@ -1,0 +1,11 @@
+FROM rocker/shiny-verse:3.6.1
+
+RUN mkdir -p /app
+
+COPY . /app
+
+WORKDIR /app
+
+EXPOSE 40000
+
+CMD ["sh", "-c", "R -e \"shiny::runApp(port=40000, host='0.0.0.0')\""]
